@@ -7,6 +7,10 @@ public class SCRReference {
     private String cardinality;
     private String policy;
     private String unbind;
+    private String bind;
+
+    public SCRReference() {
+    }
 
     public String getBind() {
         return bind;
@@ -14,11 +18,6 @@ public class SCRReference {
 
     public void setBind(String bind) {
         this.bind = bind;
-    }
-
-    private String bind;
-
-    public SCRReference(){
     }
 
     public String getReferenceName() {
@@ -61,49 +60,45 @@ public class SCRReference {
         this.unbind = unbind;
     }
 
-    private String cardinalityMapping(String cardinality){
-        if (cardinality.equals("0..1")){
-            cardinality="ReferenceCardinality.OPTIONAL";
-        }else if(cardinality.equals("1..1")){
-            cardinality="ReferenceCardinality.MANDATORY";
-        }else if(cardinality.equals("0..n")){
-            cardinality="ReferenceCardinality.MULTIPLE";
-        }else if(cardinality.equals("1..n")){
-            cardinality="ReferenceCardinality.AT_LEAST_ONE";
-        }else{
+    private String cardinalityMapping(String cardinality) {
+        if (cardinality.equals("0..1")) {
+            cardinality = "ReferenceCardinality.OPTIONAL";
+        } else if (cardinality.equals("1..1")) {
+            cardinality = "ReferenceCardinality.MANDATORY";
+        } else if (cardinality.equals("0..n")) {
+            cardinality = "ReferenceCardinality.MULTIPLE";
+        } else if (cardinality.equals("1..n")) {
+            cardinality = "ReferenceCardinality.AT_LEAST_ONE";
+        } else {
             return null;
         }
         return cardinality;
     }
 
-    private String getNewCardinality(){
-        String newCardinality=cardinalityMapping(getCardinality());
+    public String getNewCardinality() {
+        String newCardinality = cardinalityMapping(cardinality);
         return newCardinality;
     }
 
-    private String policyMapping(String policy){
-        if (policy.equals("dynamic")){
-            policy="ReferencePolicy.DYNAMIC";
-        }else if(policy.equals("static")){
-            policy="ReferencePolicy.STATIC";
-        }else{
+    private String policyMapping(String policy) {
+        if (policy.equals("dynamic")) {
+            policy = "ReferencePolicy.DYNAMIC";
+        } else if (policy.equals("static")) {
+            policy = "ReferencePolicy.STATIC";
+        } else {
             return null;
         }
         return policy;
     }
 
-    private String getNewPolicy(){
-        String newPolicy=policyMapping(getPolicy());
+    public String getNewPolicy() {
+        String newPolicy = policyMapping(policy);
         return newPolicy;
     }
 
-    private String getNewService(){
-        String newService=getService()+".class";
+    public String getNewService() {
+        String newService = service + ".class";
         return newService;
-    }
-
-    public String getReferenceAnnotation(){
-        return null;
     }
 
 }

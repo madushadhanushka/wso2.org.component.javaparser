@@ -43,12 +43,6 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 @Reference(
          name = "org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent", 
@@ -190,3 +184,4 @@ public class IdentityRecoveryServiceComponent {
         ChallengeQuestionManager.getInstance().setDefaultChallengeQuestions(tenantDomain);
     }
 }
+
