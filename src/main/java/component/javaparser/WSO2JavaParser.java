@@ -1,6 +1,7 @@
-package wso2.org;
+package component.javaparser;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -36,11 +37,14 @@ public class WSO2JavaParser {
     public boolean parseJavaFile(String path) throws IOException {
         boolean hasScrDoc = false;
         this.in = new FileInputStream(path);
+        ParserConfiguration ps = new ParserConfiguration();
+        ps.setDoNotAssignCommentsPrecedingEmptyLines(false);
+        JavaParser.setStaticConfiguration(ps);
+
         CompilationUnit cu = JavaParser.parse(in);
         addAnnotationsImports(cu);
         JavaDocCommentVisitor javaDocCommentVisitor = new JavaDocCommentVisitor();
         cu.accept(javaDocCommentVisitor, null);
-
         // Read the java doc comment by javaDocCommentVisitor instance
         String javaDocComment = javaDocCommentVisitor.getDocContent();
 
@@ -232,7 +236,7 @@ public class WSO2JavaParser {
             methodVisitor.setScrComponent(scrComponent);
             ClassVisitor classVisitor = new ClassVisitor();
             classVisitor.setScrComponent(scrComponent);
-            if (comment!=null && comment.length() > 5) {
+            if (comment != null && comment.length() > 5) {
                 classVisitor.setClassComment(comment);
             }
             File fis = new File(path);

@@ -1,4 +1,4 @@
-package wso2.org;
+package component.javaparser;
 
 public class SCRReference {
 

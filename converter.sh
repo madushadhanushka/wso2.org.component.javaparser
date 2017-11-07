@@ -46,7 +46,7 @@ converted_repo(){
 	echo "</Components>" >> $FILE_NAME
 	COMPONENT_PATH=$PWD"/"$FILE_NAME
 
-java -cp wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar wso2.org.App $COMPONENT_PATH
+java -cp wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar component.javaparser.App $COMPONENT_PATH
 	#rm  $FILE_NAME wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar
 }
 
@@ -84,7 +84,7 @@ echo -n "<?xml version=" >> $TARGET_FILE
 	echo "</targetPath>" >> $TARGET_FILE
 	echo "</Targets>" >> $TARGET_FILE
 	TARGET_PATH=$PWD"/"$TARGET_FILE
-java -cp wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar wso2.org.App $TARGET_PATH
+java -cp wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar component.javaparser.App $TARGET_PATH
 }
 
 find_oldjar(){
@@ -147,25 +147,31 @@ commit(){
 echo "commit to git"
 }
 
+
 build_and_convert() {
 
 REPO=$1
 
-if [ $? -ne 0 ]
-then
-   echo "The Repository name is incorrect. It should look like: wso2/product-is"
-   return;
-fi
-
-git clone https://github.com/$REPO.git
+git clone --depth 1 https://github.com/$REPO.git
 
 
 JAVA_PARSER=wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar
 
 LOCAL_REPO=$(ls -td -- */ | head -n 1)
 
+
+
+repo_result=$(find . -name repo_result.txt)
+if [ "$repo_result" != "./repo_result.txt" ]; then
+    touch repo_result.txt
+    repo_result=repo_result.txt
+fi
+
+
+
 cp $JAVA_PARSER $LOCAL_REPO
 cd $LOCAL_REPO
+
 
 echo "*** Building to find initial scr components.xml"
 mvn clean install -Dmaven.test.skip=true
@@ -188,33 +194,44 @@ remove_dir
 remove_files
 
 result_file=$(find . -name result.txt)
+repo_converted="BUILD FAILURE : $REPO"
 
 if [ "$result_file" = "./result.txt" ]
 then
     result=$(cat result.txt)
     if [ "$result" = "success" ]
     then
-    rm result.txt
-    echo "Repository" $REPO "converted : Successful"
-    rm $JAVA_PARSER
+    repo_converted="Repository $REPO converted : Successful"
+    echo $repo_converted
     $(commit)
     fi
 else
-    rm result.txt
-    echo "Repository" $REPO "converted : Unsuccessful"
-    rm $JAVA_PARSER
+    repo_converted="Repository $REPO converted : Unsuccessful"
+    echo $repo_converted
 fi
 
+
+rm $JAVA_PARSER
 cd ..
+
+echo "\n" >> $repo_result
+echo $repo_converted >> $repo_result
 }
+
+
 
 
 # wso2/product-is wso2-extensions/identity-inbound-auth-oauth
 REPOS=$*
 for repo in $REPOS
 do
+ if echo "$repo" | grep -q "/"; then
  build_and_convert $repo
+ else
+ echo "The Repository name is incorrect. It should look like: wso2/product-is"
+ fi
 done
+
 
 
 

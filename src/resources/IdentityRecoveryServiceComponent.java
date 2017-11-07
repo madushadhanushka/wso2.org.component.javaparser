@@ -19,6 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.core.persistence.registry.RegistryResourceMgtService;
 import org.wso2.carbon.identity.event.handler.AbstractEventHandler;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
@@ -43,16 +48,10 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 @Reference(
-         name = "org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent", 
-         immediate = true)
+        name = "org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent",
+        immediate = true)
 public class IdentityRecoveryServiceComponent {
 
     private static Log log = LogFactory.getLog(IdentityRecoveryServiceComponent.class);
@@ -88,7 +87,7 @@ public class IdentityRecoveryServiceComponent {
                 log.debug("Loading default challenge questions for super tenant.");
             }
             loadDefaultChallengeQuestions();
-        //   new ChallengeQuestionManager().getAllChallengeQuestions("carbon.super", "lk_LK");
+            //   new ChallengeQuestionManager().getAllChallengeQuestions("carbon.super", "lk_LK");
         } catch (IdentityRecoveryException e) {
             log.error("Error persisting challenge question for super tenant.", e);
         }
@@ -102,11 +101,11 @@ public class IdentityRecoveryServiceComponent {
     }
 
     @Reference(
-             name = "realm.service", 
-             service = org.wso2.carbon.user.core.service.RealmService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetRealmService")
+            name = "realm.service",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService")
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
             log.debug("Setting the Realm Service");
@@ -115,11 +114,11 @@ public class IdentityRecoveryServiceComponent {
     }
 
     @Reference(
-             name = "registry.service", 
-             service = org.wso2.carbon.registry.core.service.RegistryService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetRegistryService")
+            name = "registry.service",
+            service = org.wso2.carbon.registry.core.service.RegistryService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRegistryService")
     protected void setRegistryService(RegistryService registryService) {
         if (log.isDebugEnabled()) {
             log.debug("Setting the Registry Service");
@@ -142,11 +141,11 @@ public class IdentityRecoveryServiceComponent {
     }
 
     @Reference(
-             name = "IdentityEventService", 
-             service = org.wso2.carbon.identity.event.services.IdentityEventService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdentityEventService")
+            name = "IdentityEventService",
+            service = org.wso2.carbon.identity.event.services.IdentityEventService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityEventService")
     protected void setIdentityEventService(IdentityEventService identityEventService) {
         IdentityRecoveryServiceDataHolder.getInstance().setIdentityEventService(identityEventService);
     }
@@ -156,11 +155,11 @@ public class IdentityRecoveryServiceComponent {
     }
 
     @Reference(
-             name = "IdentityGovernanceService", 
-             service = org.wso2.carbon.identity.governance.IdentityGovernanceService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdentityGovernanceService")
+            name = "IdentityGovernanceService",
+            service = org.wso2.carbon.identity.governance.IdentityGovernanceService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityGovernanceService")
     protected void setIdentityGovernanceService(IdentityGovernanceService idpManager) {
         dataHolder.setIdentityGovernanceService(idpManager);
     }
@@ -173,11 +172,11 @@ public class IdentityRecoveryServiceComponent {
     }
 
     @Reference(
-             name = "RegistryResourceMgtService", 
-             service = org.wso2.carbon.identity.core.persistence.registry.RegistryResourceMgtService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetResourceMgtService")
+            name = "RegistryResourceMgtService",
+            service = org.wso2.carbon.identity.core.persistence.registry.RegistryResourceMgtService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetResourceMgtService")
     protected void setResourceMgtService(RegistryResourceMgtService registryResourceMgtService) {
         dataHolder.setResourceMgtService(registryResourceMgtService);
         if (log.isDebugEnabled()) {

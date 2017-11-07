@@ -1,4 +1,4 @@
-package wso2.org;
+package component.javaparser;
 
 
 import java.io.File;
@@ -34,17 +34,17 @@ public class App {
                 }
                 List pomPaths = wso2JavaParser.getPomPaths(path);
                 WSO2POMReader wso2POMReader = new WSO2POMReader();
-                String parentPom=wso2POMReader.getParentPom(pomPaths);
+                String parentPom = wso2POMReader.getParentPom(pomPaths);
                 for (int i = 0; i < pomPaths.size(); i++) {
                     boolean isParentPom = false;
-                    if(parentPom.equals(pomPaths.get(i))){
-                        isParentPom=true;
+                    if (parentPom.equals(pomPaths.get(i))) {
+                        isParentPom = true;
                     }
                     wso2POMReader.addDependency(pomPaths.get(i).toString(), isParentPom);
                 }
 
             } else if (path.contains("target.xml")) {
-                App app=new App();
+                App app = new App();
                 CompareXMLDiff compareXMLDiff = new CompareXMLDiff();
                 List internalPaths = compareXMLDiff.getTargetXML(path);
 
@@ -71,20 +71,20 @@ public class App {
                 }
 
                 // Create new file and write the final result
-                String reusltFile=app.createFilepath(path);
+                String reusltFile = app.createFilepath(path);
                 app.createNewFile(reusltFile);
-                List<String> fileDifferences=compareXMLDiff.getDifferences();
-                boolean matched=app.isMatched(fileDifferences);
+                List<String> fileDifferences = compareXMLDiff.getDifferences();
+                boolean matched = app.isMatched(fileDifferences);
 
-                String resultFile=app.createFilepath(path);
-                if(!matched){
-                        for(String diff:fileDifferences){
-                            app.writeFile(diff,resultFile);
-                        }
-                }else if(matched){
-                    app.writeFile("success",resultFile);
-                }else{
-                    app.writeFile("Unknown",resultFile);
+                String resultFile = app.createFilepath(path);
+                if (!matched) {
+                    for (String diff : fileDifferences) {
+                        app.writeFile(diff, resultFile);
+                    }
+                } else if (matched) {
+                    app.writeFile("success", resultFile);
+                } else {
+                    app.writeFile("Unknown", resultFile);
                 }
 
             }
@@ -92,46 +92,44 @@ public class App {
 
     }
 
-    private void writeFile(String result,String file) throws IOException {
+    private void writeFile(String result, String file) throws IOException {
         Path path = Paths.get(file);
         Charset charset = StandardCharsets.UTF_8;
         String content = new String(Files.readAllBytes(path), charset);
-        content=content+result;
+        content = content + result;
         Files.write(path, content.getBytes(charset));
     }
 
-
-    private String createFilepath(String path){
-       String targetPath = path.replace("target.xml","");
-       String resultFile=targetPath+"result.txt";
-       return resultFile;
+    private String createFilepath(String path) {
+        String targetPath = path.replace("target.xml", "");
+        String resultFile = targetPath + "result.txt";
+        return resultFile;
     }
 
-    private void createNewFile(String nwFile){
+    private void createNewFile(String nwFile) {
         File file = new File(nwFile);
         boolean fvar = false;
         try {
             fvar = file.createNewFile();
 
-        if (fvar){
-            System.out.println("Create the target xml file");
-        }
-        else{
-            System.out.println("Result file already present at the specified location");
-        }
+            if (fvar) {
+                System.out.println("Create the target xml file");
+            } else {
+                System.out.println("Result file already present at the specified location");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean isMatched(List<String> differences){
-        boolean match=false;
-        String matched="matched";
-        for(String diff:differences){
-            if(matched.equals(diff)){
-                match=true;
-            }else{
-                match=false;
+    private boolean isMatched(List<String> differences) {
+        boolean match = false;
+        String matched = "matched";
+        for (String diff : differences) {
+            if (matched.equals(diff)) {
+                match = true;
+            } else {
+                match = false;
                 break;
             }
         }

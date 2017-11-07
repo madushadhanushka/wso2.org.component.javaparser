@@ -1,10 +1,9 @@
-package wso2.org;
+package component.javaparser;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,14 +34,14 @@ public class WSO2POMReader {
 
     private void addSCRPluginVersion(Document doc, NodeList nodeList) {
         Element ele = null;
-        String version= "1.16.0";
+        String version = "1.16.0";
         for (int i = 0; i < nodeList.getLength(); i++) {
             ele = (Element) nodeList.item(i);
-            if(hasSCRpluginVersion(nodeList)) {
+            if (hasSCRpluginVersion(nodeList)) {
                 Node pluginVersion = ele.getElementsByTagName("maven.scr.plugin.version").item(0).getFirstChild();
                 pluginVersion.setNodeValue(version);
-            }else{
-                Element pluginVersion=doc.createElement("maven.scr.plugin.version");
+            } else {
+                Element pluginVersion = doc.createElement("maven.scr.plugin.version");
                 pluginVersion.appendChild(doc.createTextNode(version));
                 ele.appendChild(pluginVersion);
             }
@@ -63,19 +62,19 @@ public class WSO2POMReader {
             if (hasSCRPluginNode(plugin) && !parentPOM) {
                 System.out.print("Component pom : " + file + "\t\t");
                 addSCRDependencyToComponent(doc, dependencies);
-                removeSCRpluginVersion(plugin,doc,parentPOM);
+                removeSCRpluginVersion(plugin, doc, parentPOM);
                 updatePomFile(doc, file);
             } else if (parentPOM) {
                 System.out.print("Parent pom : " + file + "\t\t");
                 NodeList parentDependencies = doc.getElementsByTagName("dependencies");
                 NodeList properties = doc.getElementsByTagName("properties");
-                NodeList pluginManagement=doc.getElementsByTagName("pluginManagement");
-                NodeList plugins=doc.getElementsByTagName("plugins");
+                NodeList pluginManagement = doc.getElementsByTagName("pluginManagement");
+                NodeList plugins = doc.getElementsByTagName("plugins");
                 addSCRdependecyToParent(doc, parentDependencies);
                 addSCRDependencyVesion(doc, properties);
-                addSCRPlugin(doc,pluginManagement);
+                addSCRPlugin(doc, pluginManagement);
                 removeSCRPlugin(plugins);
-                addSCRPluginVersion(doc,properties);
+                addSCRPluginVersion(doc, properties);
                 updatePomFile(doc, file);
             }
         } catch (ParserConfigurationException e) {
@@ -87,14 +86,14 @@ public class WSO2POMReader {
         }
     }
 
-    public void removeSCRpluginVersion(NodeList plugins,Document doc,boolean parentPOM){
+    public void removeSCRpluginVersion(NodeList plugins, Document doc, boolean parentPOM) {
         Element plu = null;
         for (int i = 0; i < plugins.getLength(); i++) {
             plu = (Element) plugins.item(i);
             String name = plu.getElementsByTagName("artifactId").item(0).getTextContent().toString();
-            Node version=plu.getElementsByTagName("version").item(0);
+            Node version = plu.getElementsByTagName("version").item(0);
             if (name.equals("maven-scr-plugin")) {
-                if(version!=null) {
+                if (version != null) {
                     plu.removeChild(version);
                 }
             }
@@ -102,58 +101,57 @@ public class WSO2POMReader {
     }
 
 
-    public void addSCRPlugin(Document doc,NodeList pluginManagement){
-            Element plugin = doc.createElement("plugin");
-            Element groupId = doc.createElement("groupId");
-            groupId.appendChild(doc.createTextNode("org.apache.felix"));
-            Element artifactId=doc.createElement("artifactId");
-            artifactId.appendChild(doc.createTextNode("maven-scr-plugin"));
-            Element version=doc.createElement("version");
-            version.appendChild(doc.createTextNode("${maven.scr.plugin.version}"));
-            Element executions = doc.createElement("executions");
-            Element execution= doc.createElement("execution");
-            Element id=doc.createElement("id");
-            id.appendChild(doc.createTextNode("generate-scr-scrdescriptor"));
-            Element goals=doc.createElement("goals");
-            Element goal=doc.createElement("goal");
-            goal.appendChild(doc.createTextNode("scr"));
-            Element scope = doc.createElement("scope");
-            scope.appendChild(doc.createTextNode("provided"));
-            plugin.appendChild(groupId);
-            plugin.appendChild(artifactId);
-            plugin.appendChild(version);
-            plugin.appendChild(executions);
-            executions.appendChild(execution);
-            execution.appendChild(id);
-            execution.appendChild(goals);
-            goals.appendChild(goal);
+    public void addSCRPlugin(Document doc, NodeList pluginManagement) {
+        Element plugin = doc.createElement("plugin");
+        Element groupId = doc.createElement("groupId");
+        groupId.appendChild(doc.createTextNode("org.apache.felix"));
+        Element artifactId = doc.createElement("artifactId");
+        artifactId.appendChild(doc.createTextNode("maven-scr-plugin"));
+        Element version = doc.createElement("version");
+        version.appendChild(doc.createTextNode("${maven.scr.plugin.version}"));
+        Element executions = doc.createElement("executions");
+        Element execution = doc.createElement("execution");
+        Element id = doc.createElement("id");
+        id.appendChild(doc.createTextNode("generate-scr-scrdescriptor"));
+        Element goals = doc.createElement("goals");
+        Element goal = doc.createElement("goal");
+        goal.appendChild(doc.createTextNode("scr"));
+        Element scope = doc.createElement("scope");
+        scope.appendChild(doc.createTextNode("provided"));
+        plugin.appendChild(groupId);
+        plugin.appendChild(artifactId);
+        plugin.appendChild(version);
+        plugin.appendChild(executions);
+        executions.appendChild(execution);
+        execution.appendChild(id);
+        execution.appendChild(goals);
+        goals.appendChild(goal);
 
-            for(int i=0;i<pluginManagement.getLength();i++){
-                Node nNode=pluginManagement.item(i);
-                Element eElement = (Element) nNode;
-                eElement.getElementsByTagName("plugins").item(0).appendChild(plugin);
-            }
+        for (int i = 0; i < pluginManagement.getLength(); i++) {
+            Node nNode = pluginManagement.item(i);
+            Element eElement = (Element) nNode;
+            eElement.getElementsByTagName("plugins").item(0).appendChild(plugin);
+        }
 
     }
 
-    private void removeSCRPlugin(NodeList plugins){
-        for(int i=0;i<plugins.getLength();i++){
-            Node nNode=plugins.item(i);
+    private void removeSCRPlugin(NodeList plugins) {
+        for (int i = 0; i < plugins.getLength(); i++) {
+            Node nNode = plugins.item(i);
             Element eElement = (Element) nNode;
-            String plugin="maven-scr-plugin";
-            String name=eElement.getTextContent();
-            if(name.contains(plugin)) {
+            String plugin = "maven-scr-plugin";
+            String name = eElement.getTextContent();
+            if (name.contains(plugin)) {
                 nNode.removeChild(eElement.getElementsByTagName("plugin").item(0));
             }
         }
     }
 
 
+    public String getParentPom(List<String> paths) {
+        String shortest = paths.get(0);
 
-    public String getParentPom(List<String> paths){
-        String shortest =paths.get(0);
-
-        for(String str : paths) {
+        for (String str : paths) {
             if (str.length() < shortest.length()) {
                 shortest = str;
             }
@@ -162,35 +160,13 @@ public class WSO2POMReader {
         return shortest;
     }
 
-    public boolean isParentPom(String file){
-        File inputFile = new File(file);
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = null;
-        try {
-            dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
-            NodeList properties=doc.getElementsByTagName("properties");
-            boolean hasSCRpluginversion=hasSCRpluginVersion(properties);
-            if(properties!=null && hasSCRpluginversion){
-                return true;
-            }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean hasSCRpluginVersion(NodeList nodeList){
+    private boolean hasSCRpluginVersion(NodeList nodeList) {
         Element ele = null;
         for (int i = 0; i < nodeList.getLength(); i++) {
             ele = (Element) nodeList.item(i);
             Node pluginVersion = ele.getElementsByTagName("maven.scr.plugin.version").item(0);
-            if(pluginVersion!=null){
-                return  true;
+            if (pluginVersion != null) {
+                return true;
             }
         }
         return false;

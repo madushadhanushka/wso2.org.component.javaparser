@@ -1,4 +1,4 @@
-package wso2.org;
+package component.javaparser;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;

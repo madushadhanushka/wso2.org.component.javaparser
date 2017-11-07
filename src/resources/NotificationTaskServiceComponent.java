@@ -20,6 +20,12 @@ package org.wso2.carbon.identity.account.suspension.notification.task.internal;
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.account.suspension.notification.task.NotificationReceiversRetrievalFactory;
 import org.wso2.carbon.identity.account.suspension.notification.task.handler.AccountSuspensionNotificationHandler;
 import org.wso2.carbon.identity.account.suspension.notification.task.jdbc.JDBCNotificationReceiversRetrievalFactory;
@@ -29,16 +35,10 @@ import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 @Component(
-         name = "NotificationTaskServiceComponent", 
-         immediate = true)
+        name = "NotificationTaskServiceComponent",
+        immediate = true)
 public class NotificationTaskServiceComponent {
 
     /*
@@ -70,11 +70,11 @@ public class NotificationTaskServiceComponent {
     }
 
     @Reference(
-             name = "EventMgtService", 
-             service = org.wso2.carbon.identity.event.services.IdentityEventService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdentityEventService")
+            name = "EventMgtService",
+            service = org.wso2.carbon.identity.event.services.IdentityEventService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityEventService")
     protected void setIdentityEventService(IdentityEventService eventService) {
         NotificationTaskDataHolder.getInstance().setIdentityEventService(eventService);
     }
@@ -84,21 +84,21 @@ public class NotificationTaskServiceComponent {
     }
 
     @Reference(
-             name = "IdentityGovernanceService", 
-             service = org.wso2.carbon.identity.governance.IdentityGovernanceService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdentityGovernanceService")
+            name = "IdentityGovernanceService",
+            service = org.wso2.carbon.identity.governance.IdentityGovernanceService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityGovernanceService")
     protected void setIdentityGovernanceService(IdentityGovernanceService idpManager) {
         NotificationTaskDataHolder.getInstance().setIdentityGovernanceService(idpManager);
     }
 
     @Reference(
-             name = "NotificationTaskServiceComponent", 
-             service = org.wso2.carbon.identity.account.suspension.notification.task.NotificationReceiversRetrievalFactory.class, 
-             cardinality = ReferenceCardinality.MULTIPLE, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetNotificationReceiversRetrievalFactory")
+            name = "NotificationTaskServiceComponent",
+            service = org.wso2.carbon.identity.account.suspension.notification.task.NotificationReceiversRetrievalFactory.class,
+            cardinality = ReferenceCardinality.MULTIPLE,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetNotificationReceiversRetrievalFactory")
     protected void setNotificationReceiversRetrievalFactory(NotificationReceiversRetrievalFactory notificationReceiversRetrievalFactory) {
         NotificationTaskDataHolder.getInstance().getNotificationReceiversRetrievalFactories().put(notificationReceiversRetrievalFactory.getType(), notificationReceiversRetrievalFactory);
         if (log.isDebugEnabled()) {
@@ -114,11 +114,11 @@ public class NotificationTaskServiceComponent {
     }
 
     @Reference(
-             name = "user.realmservice.default", 
-             service = org.wso2.carbon.user.core.service.RealmService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetRealmService")
+            name = "user.realmservice.default",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService")
     protected void setRealmService(RealmService realmService) {
         NotificationTaskDataHolder.getInstance().setRealmService(realmService);
         if (log.isDebugEnabled()) {

@@ -18,6 +18,12 @@ package org.wso2.carbon.identity.governance.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.event.services.IdentityEventService;
 import org.wso2.carbon.identity.governance.IdentityGovernanceException;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
@@ -32,16 +38,10 @@ import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
 import org.wso2.carbon.user.core.listener.UserOperationEventListener;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 @Component(
-         name = "org.wso2.carbon.identity.governance.internal.IdentityMgtServiceComponent", 
-         immediate = true)
+        name = "org.wso2.carbon.identity.governance.internal.IdentityMgtServiceComponent",
+        immediate = true)
 public class IdentityMgtServiceComponent {
 
     private static Log log = LogFactory.getLog(IdentityMgtServiceComponent.class);
@@ -76,11 +76,11 @@ public class IdentityMgtServiceComponent {
     }
 
     @Reference(
-             name = "EventMgtService", 
-             service = org.wso2.carbon.identity.event.services.IdentityEventService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdentityEventService")
+            name = "EventMgtService",
+            service = org.wso2.carbon.identity.event.services.IdentityEventService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityEventService")
     protected void setIdentityEventService(IdentityEventService identityEventService) {
         IdentityMgtServiceDataHolder.getInstance().setIdentityEventService(identityEventService);
     }
@@ -90,11 +90,11 @@ public class IdentityMgtServiceComponent {
     }
 
     @Reference(
-             name = "idp.mgt.event.listener.service", 
-             service = org.wso2.carbon.identity.governance.common.IdentityConnectorConfig.class, 
-             cardinality = ReferenceCardinality.MULTIPLE, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdentityGovernanceConnector")
+            name = "idp.mgt.event.listener.service",
+            service = org.wso2.carbon.identity.governance.common.IdentityConnectorConfig.class,
+            cardinality = ReferenceCardinality.MULTIPLE,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdentityGovernanceConnector")
     protected void setIdentityGovernanceConnector(IdentityConnectorConfig identityConnectorConfig) {
         IdentityMgtServiceDataHolder.getInstance().addIdentityGovernanceConnector(identityConnectorConfig);
         try {
@@ -109,21 +109,21 @@ public class IdentityMgtServiceComponent {
     }
 
     @Reference(
-             name = "IdentityProviderManager", 
-             service = org.wso2.carbon.idp.mgt.IdpManager.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetIdpManager")
+            name = "IdentityProviderManager",
+            service = org.wso2.carbon.idp.mgt.IdpManager.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetIdpManager")
     protected void setIdpManager(IdpManager idpManager) {
         IdentityMgtServiceDataHolder.getInstance().setIdpManager(idpManager);
     }
 
     @Reference(
-             name = "RealmService", 
-             service = org.wso2.carbon.user.core.service.RealmService.class, 
-             cardinality = ReferenceCardinality.MANDATORY, 
-             policy = ReferencePolicy.DYNAMIC, 
-             unbind = "unsetRealmService")
+            name = "RealmService",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService")
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
             log.debug("Setting the Realm Service");

@@ -23,7 +23,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.kernel.startupresolver.StartupServiceUtils;
-import org.wso2.carbon.sample.runtime.mgt.Runtime;
 import org.wso2.carbon.sample.transport.mgt.Transport;
 
 import java.util.ArrayList;

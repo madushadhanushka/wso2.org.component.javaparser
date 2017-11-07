@@ -1,4 +1,4 @@
-package wso2.org;
+package component.javaparser;
 
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.MatchTracker;
@@ -73,8 +73,8 @@ public class MatchTrackerImpl implements MatchTracker {
             String immediate2 = testNode.getNode().getAttributes().getNamedItem("immediate").toString();
             if (name1.equals(name2) && immediate1.equals(immediate2)) {
                 matchedComponentTags = true;
-                System.out.println("\nBefore Change Component name: "+name2+"Changed immediate: "+immediate2);
-                System.out.println("After Change  name: "+name1+"Changed immediate: "+immediate1);
+                System.out.println("\nBefore Change Component name: " + name2 + "Changed immediate: " + immediate2);
+                System.out.println("After Change  name: " + name1 + "Changed immediate: " + immediate1);
                 System.out.println("Component name and immediate are same");
             } else {
                 String n = "\n";
