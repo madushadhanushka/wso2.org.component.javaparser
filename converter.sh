@@ -23,7 +23,7 @@ converted_repo(){
 	    echo -n "<Path>" >> $FILE_NAME
 	    dn=$( echo $directory_name | cut -c2-)
 	    FULL_PATH=$PWD$dn
-	    echo -n $FULL_PATH >> $FILE_NAME 
+	    echo -n $FULL_PATH >> $FILE_NAME
 	    echo -n "</Path>" >> $FILE_NAME
 	    echo "" >> $FILE_NAME
 	    var1=$((var1+1))
@@ -36,7 +36,7 @@ converted_repo(){
 	    echo -n "<POMPath>" >> $FILE_NAME
 	    dn=$( echo $pom_name | cut -c2-)
 	    FULL_PATH=$PWD$dn
-	    echo -n $FULL_PATH >> $FILE_NAME 
+	    echo -n $FULL_PATH >> $FILE_NAME
 	    echo -n "</POMPath>" >> $FILE_NAME
 	    echo "" >> $FILE_NAME
 	    var2=$((var2+1))
@@ -97,7 +97,7 @@ do
  jar xf $JAR_FILE OSGI-INF
  cd OSGI-INF
  files=*.xml
- if [ ${#files[@]} -gt 0 ]; 
+ if [ ${#files[@]} -gt 0 ];
  then
         mkdir $JAR_FILE
 	mv *.xml $JAR_FILE
@@ -144,15 +144,28 @@ rm component.xml
 }
 
 commit(){
+git add .
+git commit -m"Changing the scr doc comment to component annotation"
+git push origin fix-annotation
 echo "commit to git"
 }
 
 
 build_and_convert() {
 
-REPO=$1
+owner=senthalan
+if echo "$1" | grep -q ":";
+then
+	REPO=${1%:*}
+	BRANCH=${1##*:}
+else
+	REPO=$1
+    BRANCH='master'
+fi
 
-git clone --depth 1 https://github.com/$REPO.git
+
+echo "************************************Cloning $REPO:$BRANCH ********************************************"
+git clone --branch $BRANCH --depth 1 https://github.com/$owner/$REPO.git
 
 
 JAVA_PARSER=wso2.org.component.javaparser-1.0.0-SNAPSHOT-jar-with-dependencies.jar
@@ -169,14 +182,14 @@ fi
 
 
 
-cp $JAVA_PARSER $LOCAL_REPO
+cp target/$JAVA_PARSER $LOCAL_REPO
 cd $LOCAL_REPO
 
-
+git checkout -b fix-annotation
 echo "*** Building to find initial scr components.xml"
 mvn clean install -Dmaven.test.skip=true
 create_dir
-cp `find components/ -name "*.jar" | xargs grep OSGI-INF` old
+cp `find component*/ -maxdepth 4 -name "*.jar" | xargs grep OSGI-INF` old
 find_oldjar
 mvn clean
 
@@ -185,7 +198,7 @@ converted_repo
 
 echo "*** Building the repo with new scr annotations"
 mvn clean install -Dmaven.test.skip=true
-cp `find components/ -name "*.jar" | xargs grep OSGI-INF` new
+cp `find component*/ -name "*.jar" | xargs grep OSGI-INF` new
 find_newjar
 
 echo "*** Validating..."
@@ -194,19 +207,20 @@ remove_dir
 remove_files
 
 result_file=$(find . -name result.txt)
-repo_converted="BUILD FAILURE : $REPO"
+repo_converted="$REPO : BUILD FAILURE"
 
 if [ "$result_file" = "./result.txt" ]
 then
     result=$(cat result.txt)
     if [ "$result" = "success" ]
     then
-    repo_converted="Repository $REPO converted : Successful"
+    repo_converted="$REPO : Successful : https://github.com/$owner/$REPO/pull/new/fix-annotation"
     echo $repo_converted
+    rm result.txt
     $(commit)
     fi
 else
-    repo_converted="Repository $REPO converted : Unsuccessful"
+    repo_converted="$REPO : Unsuccessful"
     echo $repo_converted
 fi
 
@@ -214,7 +228,6 @@ fi
 rm $JAVA_PARSER
 cd ..
 
-echo "\n" >> $repo_result
 echo $repo_converted >> $repo_result
 }
 
@@ -222,14 +235,10 @@ echo $repo_converted >> $repo_result
 
 
 # wso2/product-is wso2-extensions/identity-inbound-auth-oauth
-REPOS=$*
-for repo in $REPOS
-do
- if echo "$repo" | grep -q "/"; then
- build_and_convert $repo
- else
- echo "The Repository name is incorrect. It should look like: wso2/product-is"
- fi
+filename='repositories.txt'
+for line in `cat $filename`; do
+         echo "########################################### Staring $line #####################################################"
+         build_and_convert $line
 done
 
 
