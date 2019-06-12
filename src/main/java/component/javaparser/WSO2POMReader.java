@@ -59,6 +59,12 @@ public class WSO2POMReader {
 
             NodeList dependencies = doc.getElementsByTagName("dependencies");
             NodeList plugin = doc.getElementsByTagName("plugin");
+            if (dependencies.getLength() == 0) {
+                System.out.println("dependencies tag not found creating...");
+                Element dependenciesElement = doc.createElement("dependencies");
+                NodeList project = doc.getElementsByTagName("project");
+                project.item(0).appendChild(dependenciesElement);
+            }
             if (hasSCRPluginNode(plugin) && !parentPOM) {
                 System.out.print("Component pom : " + file + "\t\t");
                 addSCRDependencyToComponent(doc, dependencies);
@@ -267,8 +273,14 @@ public class WSO2POMReader {
                 line = reader.readLine();
                 if (line.contains("<project")) {
                     System.out.println(line);
-                    String[] projectTag = line.split("-->");
-                    writeFile(line, "  -->\n" + projectTag[1], file);
+                    String[] projectTag = line.split("<project");
+                    if (projectTag.length == 2 ) {
+                        writeFile(line, projectTag[0] + "\n<project" + projectTag[1], file);
+                    } else if (projectTag.length == 1) {
+                        System.out.println("Format is fine");
+                    } else {
+                        System.out.println("Format is unidentified");
+                    }
                     break;
                 }
             }

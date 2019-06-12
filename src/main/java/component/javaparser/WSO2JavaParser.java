@@ -89,9 +89,11 @@ public class WSO2JavaParser {
                 list.add(x);
             }
         }
+        Boolean isComponentFound = false;
         for (String x : list) {
-            if (x.contains("component")) {
+            if (!isComponentFound && x.contains("component")) {
                 getScrAnnotation(x);
+                isComponentFound = true;
             } else if (x.contains("reference")) {
                 scrComponent.addReferences(getReference(x));
             } else {
@@ -109,6 +111,7 @@ public class WSO2JavaParser {
 
     // This method identified the @scr.component annotation elements
     private void getScrAnnotation(String x) {
+        x = x.replaceAll("\\*","");
 
         String immediate = null;
         String name = null;
@@ -117,7 +120,7 @@ public class WSO2JavaParser {
         while (m.find()) {
             immediate = m.group(1);
         }
-        Pattern pname = Pattern.compile("name=\"([^\"]*)\"");
+        Pattern pname = Pattern.compile("name=\\s*\"([^\"]*)\"");
         Matcher mname = pname.matcher(x);
         while (mname.find()) {
             name = mname.group(1);

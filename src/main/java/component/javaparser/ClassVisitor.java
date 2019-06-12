@@ -32,6 +32,8 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
 
         NormalAnnotationExpr normalAnnotationExpr = new NormalAnnotationExpr(new Name("Component"), nodeList);
         char c = '"';
+        System.out.println("name : " + scrComponent.getComponentName() );
+        System.out.println("immediate : " + scrComponent.getImmediateName() );
         normalAnnotationExpr.addPair("\n         name", c + scrComponent.getComponentName() + c);
         normalAnnotationExpr.addPair("\n         immediate", scrComponent.getImmediateName());
         return normalAnnotationExpr;

@@ -46,9 +46,13 @@ public class MethodVisitor extends VoidVisitorAdapter<Void> {
     private void addAnnotation(MethodDeclaration n) {
         List<SCRReference> scrReference = scrComponent.getScrReferences();
         if (n.getName().asString().equals("activate")) {
-            n.addMarkerAnnotation("Activate");
+            if (n.addMarkerAnnotation("Activate") == null) {
+                n.addMarkerAnnotation("Activate");
+            }
         } else if (n.getName().asString().equals("deactivate")) {
-            n.addMarkerAnnotation("Deactivate");
+            if (n.addMarkerAnnotation("Deactivate") == null) {
+                n.addMarkerAnnotation("Deactivate");
+            }
         }
         for (int i = 0; i < scrReference.size(); i++) {
             if (n.getName().asString().equals(scrReference.get(i).getBind())) {

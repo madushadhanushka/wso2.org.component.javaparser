@@ -189,7 +189,7 @@ git checkout -b fix-annotation
 echo "*** Building to find initial scr components.xml"
 mvn clean install -Dmaven.test.skip=true
 create_dir
-cp `find component*/ -maxdepth 4 -name "*.jar" | xargs grep OSGI-INF` old
+cp `find component*/ -maxdepth 4 -name "*.jar" | xargs grep OSGI-INF | awk '{print $3}'` old
 find_oldjar
 mvn clean
 
@@ -198,7 +198,7 @@ converted_repo
 
 echo "*** Building the repo with new scr annotations"
 mvn clean install -Dmaven.test.skip=true
-cp `find component*/ -name "*.jar" | xargs grep OSGI-INF` new
+cp `find component*/ -name "*.jar" | xargs grep OSGI-INF | awk '{print $3}'` new
 find_newjar
 
 echo "*** Validating..."
