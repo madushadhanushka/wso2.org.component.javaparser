@@ -1,5 +1,5 @@
 converted_repo(){
-	directory_string=$(find . -type d | grep "internal")
+	directory_string=$(grep -r '@scr.component' . |  awk '{print $1}')
 	pom_string=$(find . -type f | grep "pom.xml")
         touch component.xml
 	FILE_NAME=component.xml
@@ -21,7 +21,7 @@ converted_repo(){
 	    dn="";
 	    echo "" >> $FILE_NAME
 	    echo -n "<Path>" >> $FILE_NAME
-	    dn=$( echo $directory_name | cut -c2-)
+	    dn=$( echo $directory_name | cut -c2- | sed 's/.$//')
 	    FULL_PATH=$PWD$dn
 	    echo -n $FULL_PATH >> $FILE_NAME
 	    echo -n "</Path>" >> $FILE_NAME
@@ -153,7 +153,6 @@ echo "commit to git"
 
 build_and_convert() {
 
-owner=senthalan
 if echo "$1" | grep -q ":";
 then
 	REPO=${1%:*}
@@ -198,7 +197,7 @@ converted_repo
 
 echo "*** Building the repo with new scr annotations"
 mvn clean install -Dmaven.test.skip=true
-cp `find component*/ -name "*.jar" | xargs grep OSGI-INF | awk '{print $3}'` new
+cp `find component*/ -maxdepth 4 -name "*.jar" | xargs grep OSGI-INF | awk '{print $3}'` new
 find_newjar
 
 echo "*** Validating..."
@@ -208,6 +207,7 @@ remove_files
 
 result_file=$(find . -name result.txt)
 repo_converted="$REPO : BUILD FAILURE"
+rm $JAVA_PARSER
 
 if [ "$result_file" = "./result.txt" ]
 then
@@ -225,7 +225,6 @@ else
 fi
 
 
-rm $JAVA_PARSER
 cd ..
 
 echo $repo_converted >> $repo_result
@@ -233,7 +232,7 @@ echo $repo_converted >> $repo_result
 
 
 
-
+owner=$*
 # wso2/product-is wso2-extensions/identity-inbound-auth-oauth
 filename='repositories.txt'
 for line in `cat $filename`; do

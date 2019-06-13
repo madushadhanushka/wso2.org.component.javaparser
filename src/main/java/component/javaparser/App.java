@@ -27,10 +27,7 @@ public class App {
                 int directoryPaths = internalPaths.size();
 
                 for (int i = 0; i < directoryPaths; i++) {
-                    List<String> fileNames = wso2JavaParser.getInternalFiles(internalPaths.get(i).toString());
-                    for (int x = 0; x < fileNames.size(); x++) {
-                        wso2JavaParser.parseJavaFile(fileNames.get(x));
-                    }
+                    wso2JavaParser.parseJavaFile(internalPaths.get(i).toString());
                 }
                 List pomPaths = wso2JavaParser.getPomPaths(path);
                 WSO2POMReader wso2POMReader = new WSO2POMReader();

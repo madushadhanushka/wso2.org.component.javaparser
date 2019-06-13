@@ -34,7 +34,7 @@ public class WSO2POMReader {
 
     private void addSCRPluginVersion(Document doc, NodeList nodeList) {
         Element ele = null;
-        String version = "1.16.0";
+        String version = "1.26.0";
         for (int i = 0; i < nodeList.getLength(); i++) {
             ele = (Element) nodeList.item(i);
             if (hasSCRpluginVersion(nodeList)) {
@@ -59,7 +59,7 @@ public class WSO2POMReader {
 
             NodeList dependencies = doc.getElementsByTagName("dependencies");
             NodeList plugin = doc.getElementsByTagName("plugin");
-            if (dependencies.getLength() == 0) {
+            if (dependencies.getLength() == 0 && plugin.getLength() != 0) {
                 System.out.println("dependencies tag not found creating...");
                 Element dependenciesElement = doc.createElement("dependencies");
                 NodeList project = doc.getElementsByTagName("project");

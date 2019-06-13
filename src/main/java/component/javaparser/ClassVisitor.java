@@ -16,7 +16,9 @@ public class ClassVisitor extends VoidVisitorAdapter<Void> {
     public void visit(ClassOrInterfaceDeclaration n, Void arg) {
         super.visit(n, arg);
         n.getName();
-        n.remove(n.getComment().get());
+        if (n.getComment().isPresent()) {
+            n.remove(n.getComment().get());
+        }
         if (classComment != null && !classComment.isEmpty()) {
             n.setJavadocComment(classComment);
         }
