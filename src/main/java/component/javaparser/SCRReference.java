@@ -81,10 +81,11 @@ public class SCRReference {
     }
 
     private String policyMapping(String policy) {
-        if (policy.equals("dynamic")) {
-            policy = "ReferencePolicy.DYNAMIC";
-        } else if (policy.equals("static")) {
+
+        if (policy == null || policy.equals("static")) {
             policy = "ReferencePolicy.STATIC";
+        } else if (policy.equals("dynamic")) {
+            policy = "ReferencePolicy.DYNAMIC";
         } else {
             return null;
         }

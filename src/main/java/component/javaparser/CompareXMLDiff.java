@@ -96,9 +96,9 @@ public class CompareXMLDiff {
             }
             if (isMatchImplementationTags && isMatchComponentTag) {
                 System.out.println(file1 + "\n" + file2 + "\nFiles are same");
-                fileDifferences.add("matched");
+                fileDifferences.add("matched\n");
             } else {
-                String result = file1 + "\n" + file2 + "\nFiles are different\n";
+                String result = file1 + " and " + file2 + "\nFiles are different !!!!!!!!!!!!!!!!!!!! \n";
                 System.out.println(result);
                 fileDifferences.add(result);
                 //writeFile(result,targetFile);
